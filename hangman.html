@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hangman Game</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(90deg, #FF6B6B, #6BFFB0);
+            background-size: 200% 200%;
+            animation: gradient 5s linear infinite;
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            100% {
+                background-position: 100% 50%;
+            }
+        }
+
+        .hangman-container {
+            text-align: center;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+        }
+
+        .hangman-figure {
+            /* hangman drawing styles */
+        }
+
+        .word-display {
+            font-size: 2rem;
+            margin: 20px 0;
+        }
+
+        .letter-buttons button {
+            font-size: 1.5rem;
+            margin: 5px;
+            padding: 5px 10px;
+            background-color: #FF6B6B;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .letter-buttons button:hover {
+            background-color: #6BFFB0;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="hangman-container">
+        <div class="hangman-figure">
+        </div>
+        <div class="word-display" id="word-display">
+        </div>
+        <div class="letter-buttons" id="letter-buttons">
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    const words = [
+        "javascript", "hangman", "programming", "challenge", "developer",
+        "computer", "keyboard", "website", "function", "software",
+        "algorithm", "frontend", "backend", "code", "repository",
+        "application", "variable", "repository", "integration", "tutorial"
+    ];
+
+    let attempts = 5;
+    let wordToGuess = "";
+    const wordDisplay = document.getElementById("word-display");
+    const letterButtons = document.getElementById("letter-buttons");
+
+    function startGame() {
+        attempts = 5;
+        wordToGuess = words[Math.floor(Math.random() * words.length)];
+        displayedWord = Array(wordToGuess.length).fill('_');
+        wordDisplay.textContent = displayedWord.join(' ');
+    }
+
+    startGame();
+
+    for (let letter of "abcdefghijklmnopqrstuvwxyz") {
+        const button = document.createElement("button");
+        button.textContent = letter;
+        button.addEventListener("click", () => handleGuess(letter));
+        letterButtons.appendChild(button);
+    }
+
+    function handleGuess(letter) {
+        if (attempts === 0 || displayedWord.join('') === wordToGuess) {
+            startGame();
+        }
+
+        let found = false;
+        for (let i = 0; i < wordToGuess.length; i++) {
+            if (wordToGuess[i] === letter) {
+                displayedWord[i] = letter;
+                found = true;
+            }
+        }
+
+        wordDisplay.textContent = displayedWord.join(' ');
+
+        if (!displayedWord.includes('_')) {
+            alert("You win! The word was: " + wordToGuess);
+            startGame();
+        } else if (!found) {
+            attempts--;
+        }
+
+        if (attempts === 0) {
+            alert("All attempts are over. The word was: " + wordToGuess);
+            startGame();
+        }
+    }
+</script>
